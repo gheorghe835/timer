@@ -29,18 +29,14 @@ public class SettingsWindow {
         settingsFrame.add(timeLabel);
         settingsFrame.add(currentTime);
 
-        Timer timeUpdater = new Timer();
-        timeUpdater.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                currentTime.setText(sdf.format(new Date()));
-            }
-        }, 0, 1000);
+        new javax.swing.Timer(1000, e -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            currentTime.setText(sdf.format(new Date()));
+        }).start();
 
         // Countdown input
         JLabel countdownLabel = new JLabel("  Coundown(sec)::");
-        JTextField countdownField = new JTextField(String.valueOf(countdownManager.getCoundownValue()));
+        JTextField countdownField = new JTextField(String.valueOf(countdownManager.getCountdownValue()));
         settingsFrame.add(countdownLabel);
         settingsFrame.add(countdownField);
 

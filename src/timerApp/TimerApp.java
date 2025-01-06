@@ -8,7 +8,7 @@ public class TimerApp {
             int choice = JOptionPane.showOptionDialog(
                     null,
                     "  Choose an option",
-                    "  Opyion panel",
+                    "  Option panel",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null,

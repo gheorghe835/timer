@@ -5,64 +5,75 @@ import java.awt.*;
 import java.util.TimerTask;
 
 public class CountdownManager {
-   private Timer countdownTimer;
-   private int countdownValue = 10;
-   private Color chooseColor = Color.BLUE;
-   private JFrame colorChangingFrame;
-   private boolean toggleColor = true;
+    private Timer countdownTimer;
+    private int countdownValue = 10;
+    private Color chooseColor = Color.BLUE;
+    private JFrame colorChangingFrame;
+    private boolean toggleColor = true;
 
     public int getCountdownValue() {
         return countdownValue;
     }
 
-    public void chooseColor(JFrame parentFrame){
-        Color color = JColorChooser.showDialog(parentFrame,"  Choose Color",chooseColor);
-        if (color != null){
+    public void chooseColor(JFrame parentFrame) {
+        Color color = JColorChooser.showDialog(parentFrame, "Choose Color", chooseColor);
+        if (color != null) {
             chooseColor = color;
         }
     }
 
-    public void startCountdown(int countdownValue,int speed, JFrame parenrFrame){
+    public void startCountdown(int countdownValue, int speed, JFrame parentFrame) {
         this.countdownValue = countdownValue;
 
-        if (colorChangingFrame == null){
-            colorChangingFrame = new JFrame("  Color Changig Window");
-            colorChangingFrame.setSize(400,400);
+        if (colorChangingFrame == null) {
+            colorChangingFrame = new JFrame("Color Changing Window");
+            colorChangingFrame.setSize(400, 400);
             colorChangingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             colorChangingFrame.setVisible(true);
         }
 
-        countdownTimer = new Timer();
-        countdownTimer.scheduleAtFixeRate(new TimerTask(){
-            @Override
-            public void run() {
-                if (CountdownManager.this.countdownValue > 0) {
-                    CountdownManager.this.countdownValue--;
-                    toggleBackgroundColor();
-                } else {
-                    countdownTimer.cancel();
-                    Utils.disableControls(parentFrame, true);
-                }
+
+        new javax.swing.Timer(speed, e -> {
+            if (CountdownManager.this.countdownValue > 0) {
+                CountdownManager.this.countdownValue--;
+                toggleBackgroundColor();
+            } else {
+                ((javax.swing.Timer) e.getSource()).stop();
+                Utils.disableControls(parentFrame, true);
             }
-        }, 0, speed);
+        }).start();
+
+        // Disabling the controls
+        Utils.disableControls(parentFrame, false);
+
+        countdownTimer = new javax.swing.Timer(speed, e -> {
+            if (this.countdownValue > 0) {
+                this.countdownValue--;
+                toggleBackgroundColor();
+            } else {
+                countdownTimer.stop();
+                // We activate controls after the count is complete
+                Utils.disableControls(parentFrame, true);
+            }
+        });
+        countdownTimer.start();
     }
 
-    public void stopCountdown(){
-        if (countdownTimer != null){
-            countdownTimer.cancel();
+    public void stopCountdown() {
+        if (countdownTimer != null) {
+            countdownTimer.stop();
         }
-        if (colorChangingFrame != null){
+        if (colorChangingFrame != null) {
             colorChangingFrame.dispose();
             colorChangingFrame = null;
         }
     }
 
-    public void toggleBackgroundColor(){
+    private void toggleBackgroundColor() {
         SwingUtilities.invokeLater(() -> {
-            if (toggleColor){
+            if (toggleColor) {
                 colorChangingFrame.getContentPane().setBackground(chooseColor);
-            }
-            else {
+            } else {
                 colorChangingFrame.getContentPane().setBackground(Color.WHITE);
             }
             toggleColor = !toggleColor;
